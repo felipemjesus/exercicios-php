@@ -6,6 +6,7 @@ use Alura\Leilao\Model\Lance;
 use Alura\Leilao\Model\Leilao;
 use Alura\Leilao\Model\Usuario;
 use Alura\Leilao\Service\Avaliador;
+use DomainException;
 use PHPUnit\Framework\TestCase;
 
 class AvaliadorTest extends TestCase
@@ -72,6 +73,15 @@ class AvaliadorTest extends TestCase
         self::assertEquals(2500, $maioresValores[0]->getValor());
         self::assertEquals(2000, $maioresValores[1]->getValor());
         self::assertEquals(1700, $maioresValores[2]->getValor());
+    }
+
+    public function testLeilaoVazioNaoPodeSerAvaliado()
+    {
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('Não é possível avaliar leilão vázio.');
+
+        $leilao = new Leilao('Fusca Azul');
+        $this->leiloeiro->avalia($leilao);
     }
 
     public function leilaoEmOrdemCrescente()
