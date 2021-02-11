@@ -2,6 +2,8 @@
 
 namespace Alura\Leilao\Model;
 
+use DomainException;
+
 class Leilao
 {
     /** @var Lance[] */
@@ -18,12 +20,12 @@ class Leilao
     public function recebeLance(Lance $lance)
     {
         if (!empty($this->lances) && $this->ehUltimoUsuario($lance)) {
-            return;
+            throw new DomainException('Usuário não pode propor 2 lances consecutivos.');
         }
 
         $totalLancesUsuario = $this->quantidadeLancesPorUsuario($lance->getUsuario());
         if ($totalLancesUsuario >= 5) {
-            return;
+            throw new DomainException('Usuário não pode propor mais de 5 lances por leilão.');
         }
 
         $this->lances[] = $lance;
