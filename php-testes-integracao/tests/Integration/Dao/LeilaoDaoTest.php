@@ -3,31 +3,40 @@
 namespace Alura\Leilao\Tests\Integration\Dao;
 
 use Alura\Leilao\Dao\Leilao as LeilaoDao;
-use Alura\Leilao\Infra\ConnectionCreator;
 use Alura\Leilao\Model\Leilao;
 use PDO;
 use PHPUnit\Framework\TestCase;
 
 class LeilaoDaoTest extends TestCase
 {
-    private PDO $con;
+    private static PDO $con;
+
+    public static function setUpBeforeClass(): void
+    {
+        self::$con = new PDO('sqlite::memory:');
+        self::$con->exec('create table leiloes (
+            id INTEGER primary key,
+            descricao TEXT,
+            finalizado BOOL,
+            dataInicio TEXT
+        );');
+    }
 
     protected function setUp(): void
     {
-        $this->con = ConnectionCreator::getConnection();
-        $this->con->beginTransaction();
+        self::$con->beginTransaction();
     }
 
     protected function tearDown(): void
     {
-        $this->con->rollBack();
+        self::$con->rollBack();
     }
 
     public function testInsercaoEBuscaDevemFuncionar()
     {
         // arrange
         $leilao = new Leilao('Variante 0KM');
-        $leilaoDao = new LeilaoDao($this->con);
+        $leilaoDao = new LeilaoDao(self::$con);
         $leilaoDao->salva($leilao);
 
         // act
