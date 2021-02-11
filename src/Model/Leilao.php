@@ -5,9 +5,9 @@ namespace Alura\Leilao\Model;
 class Leilao
 {
     /** @var Lance[] */
-    private $lances;
+    private array $lances;
     /** @var string */
-    private $descricao;
+    private string $descricao;
 
     public function __construct(string $descricao)
     {
